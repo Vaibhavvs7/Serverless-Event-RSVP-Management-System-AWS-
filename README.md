@@ -5,7 +5,15 @@ The system is designed using AWS Free Tier–eligible services, follows modern c
 
 ---
 
-📌 **Features**
+## 🖼️ UI Examples
+
+![UI Example 1](/assets/ui1.png)  
+![UI Example 2](/assets/ui2.png)  
+![UI Example 3](/assets/ui3.png)
+
+---
+
+## 📌 Features
 
 - 📅 View upcoming events with full details
 - 📝 Submit RSVPs (Yes / No)
@@ -16,132 +24,148 @@ The system is designed using AWS Free Tier–eligible services, follows modern c
 
 ---
 
-🏗️ **Architecture Overview**
+## 🏗️ Architecture Overview
 
-This project follows a serverless architecture, meaning no traditional servers are managed manually.
+This project follows a **serverless architecture**, meaning no traditional servers are managed manually.
 
-<img src = 'assests/full-stack-archi'>
+### Architecture Diagram
+![Architecture Diagram](/assets/full-stack-archi.png)
 
-**High-level flow:**
-1. User interacts with the frontend (HTML/CSS/JS)
-2. Frontend calls backend APIs via HTTP
-3. API Gateway routes requests to AWS Lambda
-4. Lambda:
-   - Fetches event data from MySQL (RDS)
-   - Stores and updates RSVP data in DynamoDB
-5. Static frontend is served via S3 + CloudFront
-
----
-
-🧩 **Tech Stack**
-
-**Frontend**
-- HTML
-- CSS
-- JavaScript
-- Hosted on Amazon S3
-- Delivered globally via Amazon CloudFront
-
-**Backend**
-- AWS Lambda (Node.js)
-- Amazon API Gateway (HTTP API)
-
-**Databases**
-- **Amazon RDS (MySQL)**:  Stores structured event data
-- **Amazon DynamoDB**: Stores RSVP responses and real-time counters using a single-table design
-
-**Security & Networking**
-- VPC-enabled Lambda
-- Security Groups for database access
-- IAM roles with scoped permissions
-- CORS enabled for frontend–backend communication
-
-**Cost Management**
-- AWS Free Tier focused
-- Budget alerts to avoid unexpected charges
-- RDS pause/hibernate strategy
+### High-Level Flow
+1. User interacts with the frontend (HTML/CSS/JS).
+2. Frontend calls backend APIs via HTTP.
+3. API Gateway routes requests to AWS Lambda.
+4. AWS Lambda:
+   - Fetches event data from Amazon RDS (MySQL).
+   - Stores and updates RSVP data in Amazon DynamoDB.
+5. Static frontend is served via S3 + CloudFront.
 
 ---
 
-🗂️ **Database Design**
+## 🧩 Tech Stack
 
-**RDS (MySQL)**
+### Frontend
+- **HTML**
+- **CSS**
+- **JavaScript**
+- Hosted on **Amazon S3**
+- Delivered globally via **Amazon CloudFront**
 
-| events table |
-|--------------|
-| **eventID (PK)** | title | description | startAt | venue | bannerURL | createdAt |
+### Backend
+- **AWS Lambda** (Node.js)
+- **Amazon API Gateway** (HTTP API)
 
-- Used for event listings and detail pages
+### Databases
+- **Amazon RDS (MySQL)**:  Stores structured event data.
+- **Amazon DynamoDB**: Stores RSVP responses and real-time counters using a single-table design.
 
-**DynamoDB (NoSQL)**
+### Security & Networking
+- VPC-enabled AWS Lambda functions.
+- Security Groups for database access.
+- IAM roles with scoped permissions.
+- CORS enabled for frontend–backend communication.
 
-| PK (Partition Key) | SK (Sort Key) | Purpose               |
-|--------------------|---------------|-----------------------|
-| event#123          | respondent#*user@email* | Individual RSVP         |
-| event#123          | response#YES  | Aggregated YES count  |
-| event#123          | response#NO   | Aggregated NO count   |
-
-✔ Enables atomic updates  
-✔ Supports high-concurrency writes  
-✔ Prevents race conditions using transactions
-
----
-
-🔌 **API Endpoints**
-
-| Method | Endpoint         | Description          |
-|--------|------------------|----------------------|
-| GET    | /events          | Fetch all events    |
-| GET    | /event/{id}      | Fetch event details |
-| GET    | /stats/{id}      | Fetch RSVP stats    |
-| POST   | /rsvp            | Submit an RSVP      |
-
-**Backend Logic**
-- Single Lambda function handles routing
-- Path-based request handling
-- Environment variables for DB configuration
-- DynamoDB TransactWriteItems for atomic RSVP + counter updates
-- Duplicate RSVP checks
-- CORS support for frontend access
+### Cost Management
+- AWS Free Tier-focused.
+- Budget alerts to avoid unexpected charges.
+- RDS pause/hibernate strategy.
 
 ---
 
-🌐 **Frontend Hosting**
+## 🗂️ Database Design
 
-- Static assets hosted in Amazon S3
-- CloudFront CDN for low latency, global delivery, and HTTPS support
+### RDS (MySQL)
+#### `events` table:
+| **Column**    | Description                |
+|---------------|----------------------------|
+| eventID (PK)  | Primary Key                |
+| title         | Event title                |
+| description   | Event description          |
+| startAt       | Event start time           |
+| venue         | Event venue                |
+| bannerURL     | URL for the event banner   |
+| createdAt     | Record creation timestamp  |
 
----
-
-🧠 **Design Decisions**
-
-- **Why RDS + DynamoDB?**
-  - RDS → Structured, relational event data
-  - DynamoDB → High-volume, concurrent RSVP writes
-  - Improves performance, scalability, and cost efficiency
-
----
-
-🔮 **Future Enhancements**
-
-Planned improvements to make this production-ready:
-- 🔐 User authentication (Amazon Cognito)
-- 👨‍💼 Admin dashboard for event management
-- ✏️ RSVP update & cancellation
-- 📧 Email confirmations
-- 🚦 API rate limiting & validation
-- 📊 Monitoring & alarms (CloudWatch)
-- 🧪 Automated tests
+- Used for event listings and detail pages.
 
 ---
 
-📷 **Demo**
+### DynamoDB (NoSQL)
+#### `eventRSVPResponses` table:
+| **PK (Partition Key)** | SK (Sort Key)         | Purpose                 |
+|-------------------------|-----------------------|-------------------------|
+| event#123              | respondent#user@email | Individual RSVPs        |
+| event#123              | response#YES          | Aggregated count (YES)  |
+| event#123              | response#NO           | Aggregated count (NO)   |
 
-(Add screenshots / demo video link here)
+- **Atomic Updates:** Ensures data consistency and prevents race conditions using transactions.
+- **High-Concurrency Writes:** Supports real-time RSVP updates.
 
 ---
 
-🧑‍💻 **Author**
+## 🔌 API Endpoints
+
+| **Method** | **Endpoint**       | **Description**           |
+|------------|--------------------|---------------------------|
+| GET        | `/events`          | Fetch all events          |
+| GET        | `/event/{id}`      | Fetch event details       |
+| GET        | `/stats/{id}`      | Fetch real-time RSVP stats|
+| POST       | `/rsvp`            | Submit a new RSVP response|
+
+#### Backend Logic
+- Single AWS Lambda function handles routing.
+- Path-based request handling to determine action.
+- Environment variables for database configuration.
+- DynamoDB `TransactWriteItems` ensures atomic RSVP updates.
+- Duplicate RSVP checks implemented.
+- Full CORS support for frontend-backend communication.
+
+---
+
+## 🌐 Frontend Hosting
+
+- Static assets hosted in **Amazon S3**.
+- Delivered globally via **Amazon CloudFront** for:
+  - Low latency.
+  - Global delivery with caching.
+  - HTTPS support for secure communication.
+
+---
+
+## 🧠 Design Decisions
+
+### Why Use RDS + DynamoDB?
+1. **RDS**: Ideal for storing structured, relational event data.
+2. **DynamoDB**: Optimized for high-volume, concurrent RSVP writes.
+
+This separation provides:
+- Improved performance.
+- High scalability.
+- Better cost efficiency.
+
+---
+
+## 🔮 Future Enhancements
+
+Planned improvements to make this app production-ready:
+- 🔐 Add User Authentication using **Amazon Cognito**.
+- 👨‍💼 Create an Admin Dashboard for event management.
+- ✏️ Enable RSVP updates & cancellations.
+- 📧 Add email confirmations for RSVPs.
+- 🚦 Implement API rate limiting & input validation.
+- 📊 Introduce monitoring & alerts via **Amazon CloudWatch**.
+- 🧪 Add automated testing (unit and integration tests).
+
+---
+
+## 📷 Demo
+
+![Screenshot Example](#)  
+(Add more screenshots or demo video link here.)
+
+---
+
+## 🧑‍💻 Author
 
 **Vaibhav Sapaliya**  
 Computer Engineering Student | Cloud & Backend Enthusiast
