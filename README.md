@@ -7,9 +7,9 @@ The system is designed using AWS Free Tier–eligible services, follows modern c
 
 ## 🖼️ UI Examples
 
-![UI Example 1](/assets/ui1.png)  
-![UI Example 2](/assets/ui2.png)  
-![UI Example 3](/assets/ui3.png)
+![UI Example 1](/assests/ui1.png)  
+![UI Example 2](/assests/ui2.png)  
+![UI Example 3](/assests/ui3.png)
 
 ---
 
@@ -29,7 +29,7 @@ The system is designed using AWS Free Tier–eligible services, follows modern c
 This project follows a **serverless architecture**, meaning no traditional servers are managed manually.
 
 ### Architecture Diagram
-![Architecture Diagram](/assets/full-stack-archi.png)
+![Architecture Diagram](/assests/full-stack-archi.png)
 
 ### High-Level Flow
 1. User interacts with the frontend (HTML/CSS/JS).
