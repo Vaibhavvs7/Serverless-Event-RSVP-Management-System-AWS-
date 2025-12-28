@@ -158,13 +158,6 @@ Planned improvements to make this app production-ready:
 
 ---
 
-## 📷 Demo
-
-![Screenshot Example](#)  
-(Add more screenshots or demo video link here.)
-
----
-
 ## 🧑‍💻 Author
 
 **Vaibhav Sapaliya**  
